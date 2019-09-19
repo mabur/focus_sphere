@@ -36,8 +36,9 @@ const double STEP_SIZE = 0.09;
 const size_t NUM_SAMPLES_PER_LINE = 100;
 const double BRIGHTNESS = 1000.0;
 const auto BLUR_SCALING = 0.04;
-const auto NUM_FRAMES = 256;
+const auto NUM_FRAMES = 1;
 const auto ABERRATION = array<double,3>{1-.020, 1-.010, 1};
+const bool HAS_FOCUS_DEPTH = true;
 
 void rotate(vec& v, double a)
 {
@@ -84,8 +85,11 @@ vector<vec> random_walk_on_sphere(double blur_scaling, double angle, double focu
             const auto d = sample_uniform();
             vec point_world = vec{(1.0 - d) * p0 + d * p1};
             rotate(point_world, angle);
-            const double dz = focus_depth - point_world[2];
-            point_world += blur_scaling * dz * random_direction_focus();
+            if (HAS_FOCUS_DEPTH)
+            {
+                const double dz = focus_depth - point_world[2];
+                point_world += blur_scaling * dz * random_direction_focus();
+            }
 
             for (size_t c = 0; c < NUM_COLOR_CHANNELS; ++c)
             {
@@ -98,7 +102,14 @@ vector<vec> random_walk_on_sphere(double blur_scaling, double angle, double focu
                 {
                     const size_t xi = static_cast<size_t>(x);
                     const size_t yi = static_cast<size_t>(y);
-                    ++image[yi * IMAGE_WIDTH + xi][c];
+                    if (HAS_FOCUS_DEPTH)
+                    {
+                        ++image[yi * IMAGE_WIDTH + xi][c];
+                    }
+                    else
+                    {
+                        image[yi * IMAGE_WIDTH + xi][c] = 1;
+                    }
                 }
             }
         }
