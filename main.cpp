@@ -29,8 +29,8 @@ const size_t NUM_STEPS = 8000;
 const double STEP_SIZE = 0.09;
 const size_t NUM_SAMPLES_PER_LINE = 100;
 const double BRIGHTNESS = 1000.0;
-const auto BLUR_SCALING = {0.01, 0.02, 0.04, 0.08};
-const auto BLUR_EXPONENT = {1.0, 2.0, 4.0};
+const auto BLUR_SCALING = {0.04};
+const auto BLUR_EXPONENT = {1.0};
 
 vector<double> random_walk_on_sphere(double blur_scaling, double blur_exponent)
 {
