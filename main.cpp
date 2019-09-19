@@ -68,7 +68,7 @@ vector<vec> random_walk_on_sphere(double blur_scaling, double blur_exponent)
             const auto dz = focus_depth - point_world[2];
             point_world += blur_scaling * pow(dz, blur_exponent) * random_direction();
 
-            const auto ABERRATION = array<double,3>{1+.02, 1+.01, 1};
+            const auto ABERRATION = array<double,3>{1-.020, 1-.010, 1};
 
             for (auto c = 0; c < NUM_COLOR_CHANNELS; ++c)
             {
