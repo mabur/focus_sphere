@@ -31,16 +31,16 @@ const double BRIGHTNESS = 1000.0;
 const auto BLUR = 0.02;
 const auto BLUR_EXPONENT = 2.0;
 
-auto g = bind(      normal_distribution<double>(), mt19937(0));
-auto u = bind(uniform_real_distribution<double>(), mt19937(0));
-
-vec random_direction()
-{
-    return normalized({ g(), g(), g() });
-}
-
 vector<double> random_walk_on_sphere()
 {
+    auto g = bind(      normal_distribution<double>(), mt19937(0));
+    auto u = bind(uniform_real_distribution<double>(), mt19937(0));
+
+    const auto random_direction = [&]()
+    {
+        return normalized({ g(), g(), g() });
+    };
+
     auto line_segments = vector<vec>{};
     auto point = random_direction();
     for (size_t i = 0; i < NUM_STEPS; ++i)
