@@ -4,6 +4,7 @@
 #include <iostream>
 #include <numeric>
 #include <random>
+#include <string>
 #include <valarray>
 
 using namespace std;
@@ -100,6 +101,7 @@ vector<double> write_image(const vector<double>& image, const char* filename)
 int main()
 {
     const auto image = random_walk_on_sphere();
-    write_image(image, "image.ppm");
+    const auto file_name = "image_" + to_string(BLUR_SCALING) + "_" + to_string(BLUR_EXPONENT) + ".ppm";
+    write_image(image, file_name.c_str());
     return 0;
 }
