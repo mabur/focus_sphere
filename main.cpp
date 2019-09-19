@@ -49,21 +49,27 @@ void rotate(vec& v, double a)
     v[2] = z;
 }
 
+auto sample_normal_focus = bind(normal_distribution<double>(), mt19937(0));
+
 vector<vec> random_walk_on_sphere(double blur_scaling, double angle)
 {
-    auto g = bind(      normal_distribution<double>(), mt19937(0));
-    auto u = bind(uniform_real_distribution<double>(), mt19937(0));
+    auto sample_normal_path = bind(normal_distribution<double>(), mt19937(0));
+    auto sample_uniform = bind(uniform_real_distribution<double>(), mt19937(0));
 
-    const auto random_direction = [&]()
+    const auto random_direction_path = [&]()
     {
-        return normalized({ g(), g(), g() });
+        return normalized({ sample_normal_path(), sample_normal_path(), sample_normal_path() });
+    };
+    const auto random_direction_focus = [&]()
+    {
+        return normalized({ sample_normal_focus(), sample_normal_focus(), sample_normal_focus() });
     };
 
     auto line_segments = vector<vec>{};
-    vec point = random_direction();
+    vec point = random_direction_path();
     for (size_t i = 0; i < NUM_STEPS; ++i)
     {
-        auto dir = random_direction();
+        auto dir = random_direction_path();
         point = normalized(point + STEP_SIZE * dir);
         line_segments.push_back(point);
     }
@@ -75,12 +81,12 @@ vector<vec> random_walk_on_sphere(double blur_scaling, double angle)
         const vec& p1 = line_segments[i + 1];
         for (size_t s = 0; s < NUM_SAMPLES_PER_LINE; ++s)
         {
-            const auto d = u();
+            const auto d = sample_uniform();
             vec point_world = vec{(1.0 - d) * p0 + d * p1};
             rotate(point_world, angle);
             const double focus_depth = 1.0;
             const double dz = focus_depth - point_world[2];
-            point_world += blur_scaling * dz * random_direction();
+            point_world += blur_scaling * dz * random_direction_focus();
 
             for (size_t c = 0; c < NUM_COLOR_CHANNELS; ++c)
             {
