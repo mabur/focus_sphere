@@ -29,10 +29,10 @@ const size_t NUM_STEPS = 8000;
 const double STEP_SIZE = 0.09;
 const size_t NUM_SAMPLES_PER_LINE = 100;
 const double BRIGHTNESS = 1000.0;
-const auto BLUR_SCALING = 0.02;
-const auto BLUR_EXPONENT = 2.0;
+const auto BLUR_SCALING = {0.01, 0.02, 0.04, 0.08};
+const auto BLUR_EXPONENT = {1.0, 2.0, 4.0};
 
-vector<double> random_walk_on_sphere()
+vector<double> random_walk_on_sphere(double blur_scaling, double blur_exponent)
 {
     auto g = bind(      normal_distribution<double>(), mt19937(0));
     auto u = bind(uniform_real_distribution<double>(), mt19937(0));
@@ -63,7 +63,7 @@ vector<double> random_walk_on_sphere()
 
             const auto focus_depth = 1.0;
             const auto dz = focus_depth - point[2];
-            point += BLUR_SCALING * pow(dz, BLUR_EXPONENT) * random_direction();
+            point += blur_scaling * pow(dz, blur_exponent) * random_direction();
 
             const auto x = point[0] * RADIUS + IMAGE_WIDTH  * 0.5;
             const auto y = point[1] * RADIUS + IMAGE_HEIGHT * 0.5;
@@ -100,8 +100,15 @@ void write_image(const vector<double>& image, const char* filename)
 
 int main()
 {
-    const auto image = random_walk_on_sphere();
-    const auto file_name = "image_" + to_string(BLUR_SCALING) + "_" + to_string(BLUR_EXPONENT) + ".ppm";
-    write_image(image, file_name.c_str());
+    for (const auto blur_exponent : BLUR_EXPONENT)
+    {
+        for (const auto blur_scaling : BLUR_SCALING)
+        {
+            cout << "Exponent: " << blur_exponent << ". Scaling: " << blur_scaling << endl;
+            const auto image = random_walk_on_sphere(blur_scaling, blur_exponent);
+            const auto file_name = "image_" + to_string(blur_scaling) + "_" + to_string(blur_exponent) + ".ppm";
+            write_image(image, file_name.c_str());
+        }
+    }
     return 0;
 }
