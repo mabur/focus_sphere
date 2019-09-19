@@ -25,8 +25,8 @@ vec normalized(vec a)
 }
 
 const size_t NUM_COLOR_CHANNELS = 3;
-const size_t IMAGE_WIDTH  = 750;
-const size_t IMAGE_HEIGHT = 750;
+const size_t IMAGE_WIDTH  = 500;
+const size_t IMAGE_HEIGHT = 500;
 const double IMAGE_WIDTH_D  = IMAGE_WIDTH;
 const double IMAGE_HEIGHT_D = IMAGE_HEIGHT;
 const vec CAMERA_CENTER = {IMAGE_WIDTH  * 0.5, IMAGE_HEIGHT * 0.5, 0.0};
