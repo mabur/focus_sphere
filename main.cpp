@@ -28,7 +28,7 @@ const size_t NUM_STEPS = 8000;
 const double STEP_SIZE = 0.09;
 const size_t NUM_SAMPLES_PER_LINE = 100;
 const double BRIGHTNESS = 1000.0;
-const auto BLUR = 0.02;
+const auto BLUR_SCALING = 0.02;
 const auto BLUR_EXPONENT = 2.0;
 
 vector<double> random_walk_on_sphere()
@@ -60,8 +60,9 @@ vector<double> random_walk_on_sphere()
             const auto d = u();
             auto point = vec{(1.0 - d) * p0 + d * p1};
 
-            const auto dz = 1.0 - point[2];
-            point += BLUR * pow(dz, BLUR_EXPONENT) * random_direction();
+            const auto focus_depth = 1.0;
+            const auto dz = focus_depth - point[2];
+            point += BLUR_SCALING * pow(dz, BLUR_EXPONENT) * random_direction();
 
             const auto x = point[0] * RADIUS + IMAGE_WIDTH  * 0.5;
             const auto y = point[1] * RADIUS + IMAGE_HEIGHT * 0.5;
