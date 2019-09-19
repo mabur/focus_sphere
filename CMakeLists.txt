@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.2)
+enable_language(CXX)
+add_definitions(-std=c++11)
+PROJECT(focus_sphere)
+ADD_EXECUTABLE(focus_sphere main.cpp)
