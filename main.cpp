@@ -85,7 +85,7 @@ vector<double> random_walk_on_sphere()
     return image;
 }
 
-vector<double> write_image(const vector<double>& image, const char* filename)
+void write_image(const vector<double>& image, const char* filename)
 {
     ofstream file(filename);
     file << "P3" << endl << IMAGE_WIDTH << " " << IMAGE_HEIGHT << endl << "255" << endl;
