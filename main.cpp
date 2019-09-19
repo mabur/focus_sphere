@@ -25,8 +25,8 @@ vec normalized(vec a)
 }
 
 const size_t NUM_COLOR_CHANNELS = 3;
-const size_t IMAGE_WIDTH  = 500;
-const size_t IMAGE_HEIGHT = 500;
+const size_t IMAGE_WIDTH  = 750;
+const size_t IMAGE_HEIGHT = 750;
 const double IMAGE_WIDTH_D  = IMAGE_WIDTH;
 const double IMAGE_HEIGHT_D = IMAGE_HEIGHT;
 const vec CAMERA_CENTER = {IMAGE_WIDTH  * 0.5, IMAGE_HEIGHT * 0.5, 0.0};
@@ -36,7 +36,7 @@ const double STEP_SIZE = 0.09;
 const size_t NUM_SAMPLES_PER_LINE = 100;
 const double BRIGHTNESS = 1000.0;
 const auto BLUR_SCALING = 0.04;
-const auto NUM_FRAMES = 1;
+const auto NUM_FRAMES = 256;
 const auto ABERRATION = array<double,3>{1-.020, 1-.010, 1};
 
 void rotate(vec& v, double a)
@@ -51,7 +51,7 @@ void rotate(vec& v, double a)
 
 auto sample_normal_focus = bind(normal_distribution<double>(), mt19937(0));
 
-vector<vec> random_walk_on_sphere(double blur_scaling, double angle)
+vector<vec> random_walk_on_sphere(double blur_scaling, double angle, double focus_depth)
 {
     auto sample_normal_path = bind(normal_distribution<double>(), mt19937(0));
     auto sample_uniform = bind(uniform_real_distribution<double>(), mt19937(0));
@@ -84,7 +84,6 @@ vector<vec> random_walk_on_sphere(double blur_scaling, double angle)
             const auto d = sample_uniform();
             vec point_world = vec{(1.0 - d) * p0 + d * p1};
             rotate(point_world, angle);
-            const double focus_depth = 1.0;
             const double dz = focus_depth - point_world[2];
             point_world += blur_scaling * dz * random_direction_focus();
 
@@ -133,10 +132,10 @@ int main()
     for (size_t t = 0; t < NUM_FRAMES; ++t)
     {
         const auto angle = double(t) / NUM_FRAMES * 2.0 * 3.14159265;
-
+        const auto focus_depth = 1.0;
         const auto start = chrono::system_clock::now();
         cout << "Frame: " << t;
-        const auto image = random_walk_on_sphere(BLUR_SCALING, angle);
+        const auto image = random_walk_on_sphere(BLUR_SCALING, angle, focus_depth);
         const auto file_name = "image_" + to_string(t) + ".ppm";
         write_image(image, file_name.c_str());
         const auto end = chrono::system_clock::now();
