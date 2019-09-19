@@ -7,17 +7,6 @@
 #include <valarray>
 
 using namespace std;
-
-const size_t IMAGE_WIDTH  = 1000;
-const size_t IMAGE_HEIGHT = 1000;
-const double RADIUS = min(IMAGE_HEIGHT, IMAGE_WIDTH) * 0.4;
-const auto NUM_SAMPLES = size_t{30};
-auto NUM_STEPS = 8000;
-auto STEP_SIZE = 0.09;
-
-auto g = bind(      normal_distribution<double>(), mt19937(0));
-auto u = bind(uniform_real_distribution<double>(), mt19937(0));
-// Definition of vector type:
 using vec = valarray<double>;
 double dot(vec a, vec b)
 {
@@ -31,6 +20,17 @@ vec normalized(vec a)
 {
     return a / norm(a);
 }
+
+const size_t IMAGE_WIDTH  = 1000;
+const size_t IMAGE_HEIGHT = 1000;
+const double RADIUS = min(IMAGE_HEIGHT, IMAGE_WIDTH) * 0.4;
+const size_t NUM_STEPS = 8000;
+const double STEP_SIZE = 0.09;
+const size_t NUM_SAMPLES_PER_LINE = 30;
+
+auto g = bind(      normal_distribution<double>(), mt19937(0));
+auto u = bind(uniform_real_distribution<double>(), mt19937(0));
+
 vec random_direction()
 {
     return normalized({ g(), g(), g() });
@@ -52,7 +52,7 @@ vector<double> random_walk_on_sphere()
     {
         const auto& p0 = line_segments[i + 0];
         const auto& p1 = line_segments[i + 1];
-        for (size_t s = 0; s < NUM_SAMPLES; ++s)
+        for (size_t s = 0; s < NUM_SAMPLES_PER_LINE; ++s)
         {
             const auto d = u();
             const auto point = (1.0 - d) * p0 + d * p1;
